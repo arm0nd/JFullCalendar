@@ -1,0 +1,26 @@
+{
+    "name": "arm0nd/JFullCalendar",
+    "description": "Yii2 Calendar",
+    "type": "yii2-extension",
+    "keywords": [
+        "yii2 Calendar",
+        "yii2 FullCalendar"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Armond Hambarchian",
+            "email": "armond.h@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6",
+        "yiisoft/yii2": "*",
+        "yiisoft/yii2-jui": "~2.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "arm0nd\\JFullCalendar\\": ""
+        }
+    },
+}
