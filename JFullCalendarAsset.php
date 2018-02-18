@@ -14,7 +14,7 @@ class JFullCalendarAsset extends AssetBundle
     /**
      * @var string the directory that contains the source asset files for this asset bundle
      */
-    public $sourcePath = '@vendor/rmd/JFullCalendar/assets';
+    public $sourcePath = '@vendor/arm0nd/JFullCalendar/assets';
 
     /**
      * @var array list of CSS files that this bundle contains
