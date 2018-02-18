@@ -100,15 +100,15 @@ class JFullCalendar extends Widget
 //        $cs->registerScriptFile($BootBoxBaseUrl . '/bootstrap.bootbox.min.js');
 
         $js='var '. $this->id .' = $("#'.$this->id.'").fullCalendar('.Json::encode($this->options).');';
-        \Yii::$app->view->registerJs($js,[View::POS_READY],__CLASS__.'#'.$this->id);
+        \Yii::$app->view->registerJs($js,View::POS_READY,'#'.$this->id);
     }
 
     public function showOutput()
     {
         if (! isset($this->htmlOptions['id']))
-            $this->htmlOptions['id']=$this->id;
+            $this->htmlOptions['id'] = $this->id;
 
 //        echo CHtml::tag('div', $this->htmlOptions,'');
-        Html::tag('div','', $this->htmlOptions);
+        echo Html::tag('div','', $this->htmlOptions);
     }
 }

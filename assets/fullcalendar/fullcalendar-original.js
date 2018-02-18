@@ -65,62 +65,6 @@ var complexOptions = [ // names of options that are objects whose properties sho
 	'themeButtonIcons'
 ];
 
-	function checkArgsForJalaali(args){
-		for (var i in args){
-			if ( args[i] === true)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-
-	function delJalaaliFromArgs(args){
-		var out = [];
-		for (var i in args){
-			if ( typeof(args[i]) === "boolean")
-			{
-				continue;
-			}
-			out.push(args[i]);
-		}
-		return out;
-	}
-
-	function persianNumber(enNum){
-		var c = {
-			1: "۱",
-			2: "۲",
-			3: "۳",
-			4: "۴",
-			5: "۵",
-			6: "۶",
-			7: "۷",
-			8: "۸",
-			9: "۹",
-			0: "۰"
-		}
-		return enNum.toString().replace(/\d/g, function(enNum) {
-			return c[enNum]
-		}).replace(/,/g, "،");
-	}
-
-	function noJalaaliUnit(formatStr, isJalaali){
-		return (isJalaali ? formatStr.replace(/j/g,"") : formatStr);
-	}
-
-
-	function addJalaaliToArgs(args,isJalaali){
-		var out = [];
-		for (var i in args){
-			out.push(args[i]);
-		}
-		out.push(isJalaali);
-		return out;
-	}
-
-
 
 // Merges an array of option objects into a single object
 function mergeOptions(optionObjs) {
@@ -1132,9 +1076,6 @@ FC.moment.parseZone = function() {
 //    parseAsUTC - if there is no zone information, should we parse the input in UTC?
 //    parseZone - if there is zone information, should we force the zone of the moment?
 function makeMoment(args, parseAsUTC, parseZone) {
-	var isJalaali = checkArgsForJalaali(args);
-	args = delJalaaliFromArgs(args);
-
 	var input = args[0];
 	var isSingleString = args.length == 1 && typeof input === 'string';
 	var isAmbigTime;
@@ -1190,9 +1131,7 @@ function makeMoment(args, parseAsUTC, parseZone) {
 	}
 
 	mom._fullCalendar = true; // flag for extended functionality
-	if (isJalaali){
-		moment.loadPersian();
-	}
+
 	return mom;
 }
 
@@ -1379,28 +1318,24 @@ newMomentProto.utcOffset = function(tzo) {
 // -------------------------------------------------------------------------------------------------
 
 newMomentProto.format = function() {
-	var isJalaali = checkArgsForJalaali(arguments);
-	arguments = delJalaaliFromArgs(arguments);
 	if (this._fullCalendar && arguments[0]) { // an enhanced moment? and a format string provided?
-		return formatDate(this, arguments[0], isJalaali); // our extended formatting
+		return formatDate(this, arguments[0]); // our extended formatting
 	}
 	if (this._ambigTime) {
-		return oldMomentFormat(this, 'YYYY-MM-DD', isJalaali);
+		return oldMomentFormat(this, 'YYYY-MM-DD');
 	}
 	if (this._ambigZone) {
-		return oldMomentFormat(this, 'YYYY-MM-DD[T]HH:mm:ss', isJalaali);
+		return oldMomentFormat(this, 'YYYY-MM-DD[T]HH:mm:ss');
 	}
 	return oldMomentProto.format.apply(this, arguments);
 };
 
 newMomentProto.toISOString = function() {
-	isJalaali = checkArgsForJalaali(arguments);
-	arguments = delJalaaliFromArgs(arguments);
 	if (this._ambigTime) {
-		return oldMomentFormat(this, 'YYYY-MM-DD', isJalaali);
+		return oldMomentFormat(this, 'YYYY-MM-DD');
 	}
 	if (this._ambigZone) {
-		return oldMomentFormat(this, 'YYYY-MM-DD[T]HH:mm:ss', isJalaali);
+		return oldMomentFormat(this, 'YYYY-MM-DD[T]HH:mm:ss');
 	}
 	return oldMomentProto.toISOString.apply(this, arguments);
 };
@@ -1410,94 +1345,65 @@ newMomentProto.toISOString = function() {
 // Single Date Formatting
 // -------------------------------------------------------------------------------------------------
 
-	function toJalaaliUnit(formatStr, isJalaali){
-		if (isJalaali){
-			//formatStr=formatStr.replace(/(.*)(\bYY\b|\bYYYY\b|\bYYYYY\b|\bM\b|\bMM\b|\bMMM\b|\bMMMM\b|\bMMMMM\b|\bD\b|\bDD\b|\bDDD\b|\bDDDD\b|\bgg\b|\bgggg\b|\bggggg\b|\byear\b|\bmonth\b|\bw\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bYY\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bYYYY\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bYYYYY\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bM\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bMM\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bMMM\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bMMMM\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bMMMMM\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bD\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bDD\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bDDD\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bDDDD\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bgg\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bgggg\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bggggg\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\byear\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bmonth\b)(.*)/g,"$1j$2$3");
-			formatStr=formatStr.replace(/(.*)(\bw\b)(.*)/g,"$1j$2$3");
-			if ( ! formatStr.match(/^j.*/g))
-			{
-				formatStr = "j" + formatStr;
-			}
-		}
-		return formatStr;
-	}
 
 // call this if you want Moment's original format method to be used
-	function oldMomentFormat(mom, formatStr, isJalaali) {
-		return oldMomentProto.format.call(mom, toJalaaliUnit(formatStr, isJalaali)).replace(/j/g,""); // oldMomentProto defined in moment-ext.js
-	}
+function oldMomentFormat(mom, formatStr) {
+	return oldMomentProto.format.call(mom, formatStr); // oldMomentProto defined in moment-ext.js
+}
 
 
 // Formats `date` with a Moment formatting string, but allow our non-zero areas and
 // additional token.
-	function formatDate(date, formatStr, isJalaali) {
-		return formatDateWithChunks(date, getFormatStringChunks(formatStr, isJalaali), isJalaali);
+function formatDate(date, formatStr) {
+	return formatDateWithChunks(date, getFormatStringChunks(formatStr));
+}
+
+
+function formatDateWithChunks(date, chunks) {
+	var s = '';
+	var i;
+
+	for (i=0; i<chunks.length; i++) {
+		s += formatDateWithChunk(date, chunks[i]);
 	}
 
-
-	function formatDateWithChunks(date, chunks, isJalaali) {
-		var s = '';
-		var i;
-
-		for (i=0; i<chunks.length; i++) {
-			s += formatDateWithChunk(date, chunks[i], isJalaali);
-		}
-
-		return s;
-	}
+	return s;
+}
 
 
 // addition formatting tokens we want recognized
-	var tokenOverrides = {
-		t: function(date, isJalaali) { // "a" or "p"
-			return oldMomentFormat(date, 'a', isJalaali).charAt(0);
-		},
-		T: function(date, isJalaali) { // "A" or "P"
-			return oldMomentFormat(date, 'A', isJalaali).charAt(0);
-		}
-	};
+var tokenOverrides = {
+	t: function(date) { // "a" or "p"
+		return oldMomentFormat(date, 'a').charAt(0);
+	},
+	T: function(date) { // "A" or "P"
+		return oldMomentFormat(date, 'A').charAt(0);
+	}
+};
 
 
-	function formatDateWithChunk(date, chunk, isJalaali) {
-		var token;
-		var maybeStr;
+function formatDateWithChunk(date, chunk) {
+	var token;
+	var maybeStr;
 
-		if (typeof chunk === 'string') { // a literal string
-			return chunk;
+	if (typeof chunk === 'string') { // a literal string
+		return chunk;
+	}
+	else if ((token = chunk.token)) { // a token, like "YYYY"
+		if (tokenOverrides[token]) {
+			return tokenOverrides[token](date); // use our custom token
 		}
-		else if ((token = chunk.token)) { // a token, like "YYYY"
-			if (tokenOverrides[token]) {
-				return tokenOverrides[token](date, isJalaali); // use our custom token
-			}
-			return oldMomentFormat(date, token, isJalaali);
+		return oldMomentFormat(date, token);
+	}
+	else if (chunk.maybe) { // a grouping of other chunks that must be non-zero
+		maybeStr = formatDateWithChunks(date, chunk.maybe);
+		if (maybeStr.match(/[1-9]/)) {
+			return maybeStr;
 		}
-		else if (chunk.maybe) { // a grouping of other chunks that must be non-zero
-			maybeStr = formatDateWithChunks(date, chunk.maybe, isJalaali);
-			if (maybeStr.match(/[1-9]/)) {
-				return maybeStr;
-			}
-		}
-
-		return '';
 	}
 
+	return '';
+}
 
 
 // Date Range Formatting
@@ -1508,7 +1414,7 @@ newMomentProto.toISOString = function() {
 // "Sep 2 - 9 2013", that intelligently inserts a separator where the dates differ.
 // If the dates are the same as far as the format string is concerned, just return a single
 // rendering of one date, without any separator.
-function formatRange(date1, date2, formatStr, separator, isRTL, isJalaali) {
+function formatRange(date1, date2, formatStr, separator, isRTL) {
 	var localeData;
 
 	date1 = FC.moment.parseZone(date1);
@@ -1526,16 +1432,15 @@ function formatRange(date1, date2, formatStr, separator, isRTL, isJalaali) {
 	return formatRangeWithChunks(
 		date1,
 		date2,
-		getFormatStringChunks(formatStr, isJalaali),
+		getFormatStringChunks(formatStr),
 		separator,
-		isRTL,
-		isJalaali
+		isRTL
 	);
 }
 FC.formatRange = formatRange; // expose
 
 
-	function formatRangeWithChunks(date1, date2, chunks, separator, isRTL, isJalaali) {
+function formatRangeWithChunks(date1, date2, chunks, separator, isRTL) {
 	var unzonedDate1 = date1.clone().stripZone(); // for formatSimilarChunk
 	var unzonedDate2 = date2.clone().stripZone(); // "
 	var chunkStr; // the rendering of the chunk
@@ -1551,7 +1456,7 @@ FC.formatRange = formatRange; // expose
 	// Start at the leftmost side of the formatting string and continue until you hit a token
 	// that is not the same between dates.
 	for (leftI=0; leftI<chunks.length; leftI++) {
-		chunkStr = formatSimilarChunk(date1, date2, unzonedDate1, unzonedDate2, chunks[leftI], isJalaali);
+		chunkStr = formatSimilarChunk(date1, date2, unzonedDate1, unzonedDate2, chunks[leftI]);
 		if (chunkStr === false) {
 			break;
 		}
@@ -1560,7 +1465,7 @@ FC.formatRange = formatRange; // expose
 
 	// Similarly, start at the rightmost side of the formatting string and move left
 	for (rightI=chunks.length-1; rightI>leftI; rightI--) {
-		chunkStr = formatSimilarChunk(date1, date2, unzonedDate1, unzonedDate2,  chunks[rightI], isJalaali);
+		chunkStr = formatSimilarChunk(date1, date2, unzonedDate1, unzonedDate2,  chunks[rightI]);
 		if (chunkStr === false) {
 			break;
 		}
@@ -1570,8 +1475,8 @@ FC.formatRange = formatRange; // expose
 	// The area in the middle is different for both of the dates.
 	// Collect them distinctly so we can jam them together later.
 	for (middleI=leftI; middleI<=rightI; middleI++) {
-		middleStr1 += formatDateWithChunk(date1, chunks[middleI], isJalaali);
-		middleStr2 += formatDateWithChunk(date2, chunks[middleI], isJalaali);
+		middleStr1 += formatDateWithChunk(date1, chunks[middleI]);
+		middleStr2 += formatDateWithChunk(date2, chunks[middleI]);
 	}
 
 	if (middleStr1 || middleStr2) {
@@ -1607,7 +1512,7 @@ var similarUnitMap = {
 
 // Given a formatting chunk, and given that both dates are similar in the regard the
 // formatting chunk is concerned, format date1 against `chunk`. Otherwise, return `false`.
-function formatSimilarChunk(date1, date2, unzonedDate1, unzonedDate2, chunk, isJalaali) {
+function formatSimilarChunk(date1, date2, unzonedDate1, unzonedDate2, chunk) {
 	var token;
 	var unit;
 
@@ -1619,8 +1524,8 @@ function formatSimilarChunk(date1, date2, unzonedDate1, unzonedDate2, chunk, isJ
 
 		// are the dates the same for this unit of measurement?
 		// use the unzoned dates for this calculation because unreliable when near DST (bug #2396)
-		if (unit && unzonedDate1.isSame(unzonedDate2, toJalaaliUnit(unit, isJalaali))) {
-			return oldMomentFormat(date1, token, isJalaali); // would be the same if we used `date2`
+		if (unit && unzonedDate1.isSame(unzonedDate2, unit)) {
+			return oldMomentFormat(date1, token); // would be the same if we used `date2`
 			// BTW, don't support custom tokens
 		}
 	}
@@ -1637,8 +1542,7 @@ function formatSimilarChunk(date1, date2, unzonedDate1, unzonedDate2, chunk, isJ
 var formatStringChunkCache = {};
 
 
-function getFormatStringChunks(formatStr, isJalaali) {
-	formatStr = noJalaaliUnit(formatStr, isJalaali);
+function getFormatStringChunks(formatStr) {
 	if (formatStr in formatStringChunkCache) {
 		return formatStringChunkCache[formatStr];
 	}
@@ -3281,7 +3185,6 @@ var Grid = FC.Grid = Class.extend(ListenerMixin, MouseIgnorerMixin, {
 
 	view: null, // a View object
 	isRTL: null, // shortcut to the view's isRTL option
-	isJalaali: false,
 
 	start: null,
 	end: null,
@@ -3310,8 +3213,6 @@ var Grid = FC.Grid = Class.extend(ListenerMixin, MouseIgnorerMixin, {
 	constructor: function(view) {
 		this.view = view;
 		this.isRTL = view.opt('isRTL');
-		this.isJalaali = view.opt('isJalaali');
-
 		this.elsByFill = {};
 
 		this.dayDragListener = this.buildDayDragListener();
@@ -3899,7 +3800,7 @@ var Grid = FC.Grid = Class.extend(ListenerMixin, MouseIgnorerMixin, {
 
 		if (
 			view.intervalDuration.as('months') == 1 &&
-			(this.isJalaali ? date.jMonth() != view.intervalStart.jMonth() : date.month() != view.intervalStart.month())
+			date.month() != view.intervalStart.month()
 		) {
 			classes.push('fc-other-month');
 		}
@@ -5484,7 +5385,7 @@ var DayTableMixin = FC.DayTableMixin = {
 		return '' +
 			'<th class="fc-day-header ' + view.widgetHeaderClass + ' fc-' + dayIDs[date.day()] + '"' +
 				(this.rowCnt === 1 ?
-					' data-date="' + date.format('YYYY-MM-DD',this.isJalaali) + '"' :
+					' data-date="' + date.format('YYYY-MM-DD') + '"' :
 					'') +
 				(colspan > 1 ?
 					' colspan="' + colspan + '"' :
@@ -5496,7 +5397,7 @@ var DayTableMixin = FC.DayTableMixin = {
 				// don't make a link if the heading could represent multiple days, or if there's only one day (forceOff)
 				view.buildGotoAnchorHtml(
 					{ date: date, forceOff: this.rowCnt > 1 || this.colCnt === 1 },
-					htmlEscape(date.format(this.colHeadFormat,this.isJalaali)) // inner HTML
+					htmlEscape(date.format(this.colHeadFormat)) // inner HTML
 				) +
 			'</th>';
 	},
@@ -5541,7 +5442,7 @@ var DayTableMixin = FC.DayTableMixin = {
 		classes.unshift('fc-day', view.widgetContentClass);
 
 		return '<td class="' + classes.join(' ') + '"' +
-			' data-date="' + date.format('YYYY-MM-DD',this.isJalaali) + '"' + // if date has a time, won't format it
+			' data-date="' + date.format('YYYY-MM-DD') + '"' + // if date has a time, won't format it
 			(otherAttrs ?
 				' ' + otherAttrs :
 				'') +
@@ -5752,9 +5653,7 @@ var DayGrid = FC.DayGrid = Grid.extend(DayTableMixin, {
 			}
 		}
 
-		html += '<td class="' + classes.join(' ') + '" data-date="' + date.format(this.isJalaali) + '">' ;
-
-
+		html += '<td class="' + classes.join(' ') + '" data-date="' + date.format() + '">';
 
 		if (this.view.cellWeekNumbersVisible && (date.day() == weekCalcFirstDoW)) {
 			html += this.view.buildGotoAnchorHtml(
@@ -5768,7 +5667,7 @@ var DayGrid = FC.DayGrid = Grid.extend(DayTableMixin, {
 			html += this.view.buildGotoAnchorHtml(
 				date,
 				{ 'class': 'fc-day-number' },
-				(this.isJalaali  ? persianNumber(date.jDate()) :  date.date())
+				date.date() // inner HTML
 			);
 		}
 
@@ -7905,7 +7804,6 @@ var View = FC.View = Class.extend(EmitterMixin, ListenerMixin, {
 	intervalDuration: null,
 	intervalUnit: null, // name of largest unit being displayed, like "month" or "week"
 
-	isJalaali: false,
 	isRTL: false,
 	isSelected: false, // boolean whether a range of time is user-selected or not
 	selectedEvent: null,
@@ -7940,7 +7838,6 @@ var View = FC.View = Class.extend(EmitterMixin, ListenerMixin, {
 		this.initThemingProps();
 		this.initHiddenDays();
 		this.isRTL = this.opt('isRTL');
-		this.isJalaali = this.opt('isJalaali');
 
 		this.eventOrderSpecs = parseFieldSpecs(this.opt('eventOrder'));
 
@@ -7995,13 +7892,8 @@ var View = FC.View = Class.extend(EmitterMixin, ListenerMixin, {
 	// Subclasses can override. Must return all properties.
 	computeRange: function(date) {
 		var intervalUnit = computeIntervalUnit(this.intervalDuration);
-		var intervalStart = date.clone().startOf(toJalaaliUnit(intervalUnit,this.isJalaali));
-		if (this.isJalaali && ( intervalUnit === "year" || intervalUnit === "month")) {
-			var intervalEnd = intervalStart.clone().add(1,toJalaaliUnit(intervalUnit,this.isJalaali));
-		}
-		else {
-			var intervalEnd = intervalStart.clone().add(this.intervalDuration);
-		}
+		var intervalStart = date.clone().startOf(intervalUnit);
+		var intervalEnd = intervalStart.clone().add(this.intervalDuration);
 		var start, end;
 
 		// normalize the range's time-ambiguity
@@ -8116,7 +8008,7 @@ var View = FC.View = Class.extend(EmitterMixin, ListenerMixin, {
 			end = end.clone().subtract(1); // convert to inclusive. last ms of previous day
 		}
 
-		return formatRange(range.start, end, formatStr, separator, this.opt('isRTL'), this.opt('isJalaali'));
+		return formatRange(range.start, end, formatStr, separator, this.opt('isRTL'));
 	},
 
 
@@ -9451,7 +9343,6 @@ function Calendar_constructor(element, overrides) {
 	var t = this;
 
 
-
 	// Exports
 	// -----------------------------------------------------------------------------------
 
@@ -9563,8 +9454,7 @@ function Calendar_constructor(element, overrides) {
 	// Accepts anything the vanilla moment() constructor accepts.
 	t.moment = function() {
 		var mom;
-		arguments = addJalaaliToArgs(arguments,t.options.isJalaali);
-		
+
 		if (t.options.timezone === 'local') {
 			mom = FC.moment.apply(null, arguments);
 
@@ -10428,8 +10318,7 @@ Calendar.defaults = {
 	
 	handleWindowResize: true,
 	windowResizeDelay: 100, // milliseconds before an updateSize happens
-	isJalaali: false,
-	
+
 	longPressDelay: 1000
 	
 };

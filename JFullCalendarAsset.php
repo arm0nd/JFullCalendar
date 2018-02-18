@@ -14,21 +14,23 @@ class JFullCalendarAsset extends AssetBundle
     /**
      * @var string the directory that contains the source asset files for this asset bundle
      */
-    public $sourcePath = '@vendor/arm0nd/JFullCalendar/assets';
+    public $sourcePath = '@vendor/arm0nd/JFullCalendar';
 
     /**
      * @var array list of CSS files that this bundle contains
      */
     public $css = [
-        'fullcalendar/fullcalendar_gebo.css',
+        'assets/fullcalendar/fullcalendar.min.css',
     ];
 
     /**
      * @var array list of JavaScript files that this bundle contains
      */
     public $js = [
-        'fullcalendar/jalali.js',
-        'fullcalendar/fullcalendar.min.js',
+        'lib/moment.min.js',
+        'lib/moment-jalaali.js',
+        'assets/fullcalendar/fullcalendar.min.js',
+        'locale/fa.js',
     ];
 
     /**
