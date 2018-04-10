@@ -1,6 +1,6 @@
 <?php
 
-namespace arm0nd\JFullCalendar;
+namespace arm0nd\jfullcalendar;
 
 use Yii;
 use yii\base\Widget;

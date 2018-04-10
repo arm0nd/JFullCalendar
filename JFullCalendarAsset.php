@@ -1,6 +1,6 @@
 <?php
 
-namespace arm0nd\JFullCalendar;
+namespace arm0nd\jfullcalendar;
 
 use yii\web\AssetBundle;
 
@@ -14,7 +14,7 @@ class JFullCalendarAsset extends AssetBundle
     /**
      * @var string the directory that contains the source asset files for this asset bundle
      */
-    public $sourcePath = '@vendor/arm0nd/JFullCalendar';
+    public $sourcePath = '@vendor/arm0nd/jfullcalendar';
 
     /**
      * @var array list of CSS files that this bundle contains
